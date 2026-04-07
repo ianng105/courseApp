@@ -15,11 +15,14 @@ public class Course {
     private String description;
 
     @OneToMany
-    @JoinColumn
     private ArrayList<Lecture>lectures=new ArrayList<>() ;
+
+    @OneToMany
+    private ArrayList<Poll>polls=new ArrayList<>();
 
     @ManyToMany
     private ArrayList<Student> students= new ArrayList<>();
+
     @ManyToMany
     private List<Teacher> teachers= new ArrayList<>();
 
@@ -35,9 +38,7 @@ public class Course {
         return description;
     }
 
-    public ArrayList<Lecture> getLectures(){
-        return lectures;
-    }
+    public ArrayList<Lecture> getLectures(){return lectures;}
 
     public void setTitle(String title){
         this.title=title;
@@ -46,6 +47,8 @@ public class Course {
     public void setCoursecode(String coursecode){
         this.coursecode=coursecode;
     }
+
+    public void setDescription(String description){this.description=description;}
 
     public void addLecture(Lecture lecture){
        lectures.add(lecture);
