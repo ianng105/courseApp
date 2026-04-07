@@ -8,6 +8,7 @@ import java.util.UUID;
 @Entity
 public class User {
 
+
     @Id
     @GeneratedValue
     private UUID user_id;

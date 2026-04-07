@@ -14,6 +14,7 @@ public class Course {
     private String coursecode;
     private String description;
 
+
     @OneToMany
     private ArrayList<Lecture>lectures=new ArrayList<>() ;
 

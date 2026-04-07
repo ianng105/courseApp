@@ -7,6 +7,7 @@ import java.util.ArrayList;
 @Entity
 public class Student extends User{
 
+
     @ManyToMany
     @JoinTable(name = "student_course", // Name of the bridge table
             joinColumns = @JoinColumn(name = "user_id"),

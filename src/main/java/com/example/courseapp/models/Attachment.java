@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Attachment {
 
+
     @Id
     @GeneratedValue
     private String a_id;
