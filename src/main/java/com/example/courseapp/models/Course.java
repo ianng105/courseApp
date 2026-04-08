@@ -3,7 +3,6 @@ package com.example.courseapp.models;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Course {
@@ -22,10 +21,7 @@ public class Course {
     private ArrayList<Poll>polls=new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<Student> students= new ArrayList<>();
-
-    @ManyToMany
-    private List<Teacher> teachers= new ArrayList<>();
+    private ArrayList<User> users= new ArrayList<>();
 
     public String getTitle(){
         return title;

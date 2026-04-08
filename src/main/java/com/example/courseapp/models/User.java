@@ -3,6 +3,7 @@ package com.example.courseapp.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Entity
@@ -12,6 +13,7 @@ public class User {
     @Id
     @GeneratedValue
     private UUID user_id;
+
 
     @Column(unique = true)
     private String username ;
@@ -26,14 +28,26 @@ public class User {
     @Column(length = 8)
     private int phonenum;
 
+    private String identity;
+
+    @ManyToMany
+    @JoinTable(name = "user_course", // Name of the bridge table
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
+
+    private ArrayList<Course> courses=new ArrayList<>() ;
+
+;
+
     public User(){}
 
-    public User(String username,String fullname,String password, String email,int phonenum){
+    public User(String username,String fullname,String password, String email,int phonenum, String identity){
         this.username=username;
         this.fullname=fullname;
         this.password=password;
         this.email=email;
         this.phonenum=phonenum;
+        this.identity=identity;
     }
 
     public String getUsername(){
@@ -56,6 +70,8 @@ public class User {
         return phonenum;
     }
 
+    public String getIdentity(){return identity;}
+
     public void setUsername(String username){this.username = username;}
 
     public void setFullname(String fullname){
@@ -72,6 +88,18 @@ public class User {
 
     public void setPhonenum(int phonenum){
         this.phonenum=phonenum;
+    }
+
+    public void setIdentity(String identity){
+        this.identity=identity;
+    }
+
+    public void addCoursesTake(Course c){
+        courses.add(c);
+    }
+
+    public void removeCoursesTake(Course c){
+        courses.remove(c);
     }
 
 
