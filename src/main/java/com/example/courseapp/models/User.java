@@ -94,11 +94,11 @@ public class User {
         this.identity=identity;
     }
 
-    public void addCoursesTake(Course c){
+    public void addCourses(Course c){
         courses.add(c);
     }
 
-    public void removeCoursesTake(Course c){
+    public void removeCourses(Course c){
         courses.remove(c);
     }
 

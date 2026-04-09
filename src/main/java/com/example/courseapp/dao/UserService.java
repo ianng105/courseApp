@@ -2,9 +2,14 @@ package com.example.courseapp.dao;
 
 import com.example.courseapp.exceptions.InvalidEmail;
 import com.example.courseapp.exceptions.InvalidPhoneNumber;
+import com.example.courseapp.exceptions.ResourceNotFoundException;
+import com.example.courseapp.models.Course;
 import com.example.courseapp.models.User;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +18,14 @@ import java.util.List;
 @Service
 public class UserService {
 
+    @Autowired
+    private PasswordEncoder pe;
+
     @Resource
     private UserRepository uRepo;
+
+    @Resource
+    private CourseRepository cRepo;
 
     //create user(student)
     @Transactional
@@ -42,7 +53,7 @@ public class UserService {
         if (!email.contains("@")){
             throw new InvalidEmail(email);
         }
-        User newUser = new User(username,fullname,password,email,phn,"teacher");
+        User newUser = new User(username,fullname,pe.encode(password),email,phn,"teacher");
         uRepo.save(newUser);
     }
 
@@ -52,7 +63,8 @@ public class UserService {
         return uRepo.findAll();
     }
 
-    /*
+
+    @Transactional
     public void delete(String username) {
         User user = uRepo.findById(username).orElse(null);
         if (user == null) {
@@ -61,6 +73,35 @@ public class UserService {
         uRepo.delete(user);
     }
 
-     */
+    //add course to user
+    @Transactional
+    public void addCourse(String username,String coursecode) throws ResourceNotFoundException {
+        User user = uRepo.findById(username).orElse(null);
+        Course course = cRepo.findById(coursecode).orElse(null);
+        if(course==null){
+            throw new ResourceNotFoundException("Course code does not exist ");
+        }
+        if (user == null) {
+            throw new UsernameNotFoundException("User '" + username + "' not found.");
+        }
+        user.addCourses(course);
+        uRepo.save(user);
+    }
+
+    @Transactional
+    public void removeCourse(String username,String coursecode) throws ResourceNotFoundException {
+        User user = uRepo.findById(username).orElse(null);
+        Course course = cRepo.findById(coursecode).orElse(null);
+        if(course==null){
+            throw new ResourceNotFoundException("Course code does not exist ");
+        }
+        if (user == null) {
+            throw new UsernameNotFoundException("User '" + username + "' not found.");
+        }
+        user.removeCourses(course);
+        uRepo.save(user);
+    }
+
+
 }
 
