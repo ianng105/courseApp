@@ -30,14 +30,14 @@ public class User {
 
     private String identity;
 
+    private String role = "user";
+
     @ManyToMany
     @JoinTable(name = "user_course", // Name of the bridge table
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
 
     private ArrayList<Course> courses=new ArrayList<>() ;
-
-;
 
     public User(){}
 
@@ -48,6 +48,7 @@ public class User {
         this.email=email;
         this.phonenum=phonenum;
         this.identity=identity;
+
     }
 
     public String getUsername(){
@@ -71,6 +72,10 @@ public class User {
     }
 
     public String getIdentity(){return identity;}
+
+    public String getRole(){
+        return role;
+    }
 
     public void setUsername(String username){this.username = username;}
 
@@ -101,6 +106,11 @@ public class User {
     public void removeCourses(Course c){
         courses.remove(c);
     }
+
+    public void setToAdmin(){
+        role="admin";
+    }
+
 
 
 }
