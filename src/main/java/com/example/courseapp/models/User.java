@@ -30,7 +30,7 @@ public class User {
 
     private String identity;
 
-    private String role = "user";
+    private String role = "USER";
 
     @ManyToMany
     @JoinTable(name = "user_course", // Name of the bridge table
@@ -108,7 +108,7 @@ public class User {
     }
 
     public void setToAdmin(){
-        role="admin";
+        role="ADMIN";
     }
 
 

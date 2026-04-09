@@ -40,7 +40,6 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
-
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
