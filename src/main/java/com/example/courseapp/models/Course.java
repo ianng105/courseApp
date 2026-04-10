@@ -21,7 +21,7 @@ public class Course {
     private ArrayList<Poll>polls=new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<User> users= new ArrayList<>();
+    private ArrayList<Users> users= new ArrayList<>();
 
     public String getTitle(){
         return title;

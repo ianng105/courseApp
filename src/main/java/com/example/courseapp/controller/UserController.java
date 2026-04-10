@@ -101,28 +101,28 @@ public class UserController {
 
     @GetMapping("/create")
     public ModelAndView create() {
-        return new ModelAndView("register", "User", new Form());
+        return new ModelAndView("register", "Users", new Form());
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute("User") @Valid Form form, BindingResult result)
+    public String create(@ModelAttribute("Users") @Valid Form form, BindingResult result)
             throws IOException, InvalidEmail, InvalidPhoneNumber {
         uv.validate(form, result);
 
         if (result.hasErrors()) {
-            return "addUser";
+            return "register";
         }
 
         // set the path later
         if(form.getIdentity().equals("student")){
-            us.createStudent(form.getUsername(),form.getFullname(),  form.getPassword(),form.getEmail(), form.getPhonenum());
+            us.createStudent(form.getUsername(),form.getFullname(), form.getPassword(),form.getEmail(), form.getPhonenum());
             logger.info("Student {} created.", form.getUsername());
-            return "";
+            return "index";
         }
         else{
             us.createTeacher(form.getUsername(),form.getFullname(),  form.getPassword(),form.getEmail(), form.getPhonenum());
             logger.info("Teacher {} created.", form.getUsername());
-            return "";
+            return "index";
         }
     }
 

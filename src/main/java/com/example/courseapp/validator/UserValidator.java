@@ -2,7 +2,7 @@ package com.example.courseapp.validator;
 
 
 import com.example.courseapp.dao.UserRepository;
-import com.example.courseapp.models.User;
+import com.example.courseapp.models.Users;
 import com.example.courseapp.controller.UserController.Form;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class UserValidator implements Validator {
     }
 
     @Override
-    public static void validate(Object o, Errors errors) {
+    public void validate(Object o, Errors errors) {
         Form userF = (Form) o;
         ValidationUtils.rejectIfEmpty(errors, "confirm_password", "",
                 "Please confirm your password.");
@@ -31,7 +31,7 @@ public class UserValidator implements Validator {
         if (userF.getUsername().equals("")) {
             return;
         }
-        User user = uRepo.findById(userF.getUsername()).orElse(null);
+        Users user = uRepo.findById(userF.getUsername()).orElse(null);
         if (user != null) {
             errors.rejectValue("username", "", "User already exists.");
         }

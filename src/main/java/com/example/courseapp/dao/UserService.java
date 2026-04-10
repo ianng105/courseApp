@@ -4,7 +4,7 @@ import com.example.courseapp.exceptions.InvalidEmail;
 import com.example.courseapp.exceptions.InvalidPhoneNumber;
 import com.example.courseapp.exceptions.ResourceNotFoundException;
 import com.example.courseapp.models.Course;
-import com.example.courseapp.models.User;
+import com.example.courseapp.models.Users;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        User user = uRepo.findById(username).orElse(null);
+        Users user = uRepo.findById(username).orElse(null);
         if (user == null) {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
@@ -57,7 +57,7 @@ public class UserService implements UserDetailsService {
         if (!email.contains("@")){
             throw new InvalidEmail(email);
         }
-        User newUser = new User(username,fullname,password,email,phn,"student");
+        Users newUser = new Users(username,fullname,password,email,phn,"student");
         uRepo.save(newUser);
     }
 
@@ -72,20 +72,20 @@ public class UserService implements UserDetailsService {
         if (!email.contains("@")){
             throw new InvalidEmail(email);
         }
-        User newUser = new User(username,fullname,pe.encode(password),email,phn,"teacher");
+        Users newUser = new Users(username,fullname,pe.encode(password),email,phn,"teacher");
         uRepo.save(newUser);
     }
 
     //read user information
     @Transactional
-    public List<User> getUsers(){
+    public List<Users> getUsers(){
         return uRepo.findAll();
     }
 
 
     @Transactional
     public void delete(String username) {
-        User user = uRepo.findById(username).orElse(null);
+        Users user = uRepo.findById(username).orElse(null);
         if (user == null) {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
@@ -95,7 +95,7 @@ public class UserService implements UserDetailsService {
     //add course to user
     @Transactional
     public void addCourse(String username,String coursecode) throws ResourceNotFoundException {
-        User user = uRepo.findById(username).orElse(null);
+        Users user = uRepo.findById(username).orElse(null);
         Course course = cRepo.findById(coursecode).orElse(null);
         if(course==null){
             throw new ResourceNotFoundException("Course code does not exist ");
@@ -109,7 +109,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void removeCourse(String username,String coursecode) throws ResourceNotFoundException {
-        User user = uRepo.findById(username).orElse(null);
+        Users user = uRepo.findById(username).orElse(null);
         Course course = cRepo.findById(coursecode).orElse(null);
         if(course==null){
             throw new ResourceNotFoundException("Course code does not exist ");
