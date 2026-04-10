@@ -8,9 +8,6 @@ public class IndexController {
     @GetMapping("/")
     public String index(){return "index";}
 
-    @GetMapping("/Signup")
-    public String Signup(){
-        return "register";
-    }
+
 }
 
