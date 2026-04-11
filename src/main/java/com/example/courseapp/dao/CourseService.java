@@ -7,6 +7,7 @@ import com.example.courseapp.models.Lecture;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class CourseService {
@@ -68,5 +69,9 @@ public class CourseService {
         cRepo.save(c);
     }
 
+    @Transactional
+    public List<Course> getAllCourses() {
+        return cRepo.findAll();
+    }
 
 }

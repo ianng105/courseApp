@@ -84,6 +84,30 @@ public class UserService implements UserDetailsService {
 
 
     @Transactional
+    public void update(String username, String fullname, String password, String email, String phonenum)
+        throws InvalidEmail,InvalidPhoneNumber{
+        Users target=uRepo.findById(username).orElse(null);
+        if (target == null) {
+            throw new UsernameNotFoundException("User '" + username + "' not found.");
+        }
+        if(phonenum.length()<8){
+            throw new InvalidPhoneNumber();
+        }
+        int phn = Integer.parseInt(phonenum);
+        if (!email.contains("@")){
+            throw new InvalidEmail(email);
+        }
+        target.setUsername(username);
+        target.setFullname(fullname);
+        target.setPassword(password);
+        target.setEmail(email);
+        target.setPhonenum(phn);
+        uRepo.save(target);
+
+    }
+
+
+    @Transactional
     public void delete(String username) {
         Users user = uRepo.findById(username).orElse(null);
         if (user == null) {
@@ -121,6 +145,13 @@ public class UserService implements UserDetailsService {
         uRepo.save(user);
     }
 
-
+    @Transactional
+    public Users getUserByUsername(String username) {
+        Users user = uRepo.findById(username).orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException("User '" + username + "' not found.");
+        }
+        return user;
+    }
 }
 
