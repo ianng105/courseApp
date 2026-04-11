@@ -4,18 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
-public class User {
+public class Users {
 
 
     @Id
-    @GeneratedValue
-    private UUID user_id;
-
-
-    @Column(unique = true)
     private String username ;
 
     private String fullname ;
@@ -30,24 +25,26 @@ public class User {
 
     private String identity;
 
+    private String role = "USER";
+
     @ManyToMany
     @JoinTable(name = "user_course", // Name of the bridge table
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
 
-    private ArrayList<Course> courses=new ArrayList<>() ;
+    private List<Course> courses=new ArrayList<>() ;
 
-;
+    public Users(){}
 
-    public User(){}
-
-    public User(String username,String fullname,String password, String email,int phonenum, String identity){
+    public Users(String username, String fullname, String password, String email, int phonenum, String identity){
         this.username=username;
         this.fullname=fullname;
         this.password=password;
         this.email=email;
         this.phonenum=phonenum;
         this.identity=identity;
+
+
     }
 
     public String getUsername(){
@@ -72,6 +69,10 @@ public class User {
 
     public String getIdentity(){return identity;}
 
+    public String getRole(){
+        return role;
+    }
+
     public void setUsername(String username){this.username = username;}
 
     public void setFullname(String fullname){
@@ -94,13 +95,20 @@ public class User {
         this.identity=identity;
     }
 
-    public void addCoursesTake(Course c){
+    public void setCourses(ArrayList<Course> c ){courses=c;}
+
+    public void addCourses(Course c){
         courses.add(c);
     }
 
-    public void removeCoursesTake(Course c){
+    public void removeCourses(Course c){
         courses.remove(c);
     }
+
+    public void setToAdmin(){
+        role="ADMIN";
+    }
+
 
 
 }

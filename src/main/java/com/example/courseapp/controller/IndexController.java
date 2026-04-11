@@ -27,11 +27,11 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
-        Course course = courseService.findAll().get(0);
-        List<Lecture> lectures = lectureService.findAll();
-        List<Poll> polls = pollService.findAll();
+        List<Course> courses = courseService.getAllCourses();
+        List<Lecture> lectures = lectureService.getAllLectures();
+        List<Poll> polls = pollService.getAllPolls();
 
-        model.addAttribute("course", course);
+        model.addAttribute("courses", courses);
         model.addAttribute("lectures", lectures);
         model.addAttribute("polls", polls);
 

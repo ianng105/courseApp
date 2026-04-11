@@ -1,6 +1,8 @@
 package com.example.courseapp.controller;
 
+import com.example.courseapp.dao.CommentService;
 import com.example.courseapp.dao.LectureService;
+import com.example.courseapp.exceptions.ResourceNotFoundException;
 import com.example.courseapp.models.Lecture;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.security.Principal;
 
 @Controller
@@ -21,60 +21,84 @@ public class LectureController {
     @Autowired
     private LectureService lectureService;
 
+    @Autowired
+    private CommentService commentService;
+
     public static class Form {
+
         @NotEmpty
         private String title;
 
-        @Size(max = 500)
+        @NotEmpty
+        private String coursecode;
+
+        @Size(max = 200, message = "Summary too long")
         private String summary;
 
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
 
+        public String getCoursecode() { return coursecode; }
+        public void setCoursecode(String coursecode) { this.coursecode = coursecode; }
+
         public String getSummary() { return summary; }
         public void setSummary(String summary) { this.summary = summary; }
     }
 
-    @GetMapping("/lecture/{id}")
-    public String viewLecture(@PathVariable Long id, Model model, Principal principal) {
-        Lecture lecture = lectureService.findById(id);
-        model.addAttribute("lecture", lecture);
-        model.addAttribute("attachments", lecture.getAttachments());
-        model.addAttribute("comments", lectureService.getComments(id));
-        model.addAttribute("currentUser", principal.getName());
-        return "lecture";
+    // 查看单个Lecture
+    @GetMapping("/lecture/{L_id}")
+    public String viewLecture(@PathVariable String L_id, Model model, Principal principal) {
+        try {
+            Lecture lecture = lectureService.getLectureById(L_id);
+            model.addAttribute("lecture", lecture);
+            model.addAttribute("attachments", lecture.getAttachments());
+            model.addAttribute("comments", commentService.getCommentsByLecture(L_id));
+            model.addAttribute("currentUser", principal.getName());
+            return "lecture";
+        } catch (ResourceNotFoundException e) {
+            return "redirect:/";
+        }
     }
 
+    // 新建Lecture表单页面
     @GetMapping("/admin/lecture/new")
     public String newLectureForm(Model model) {
         model.addAttribute("form", new Form());
         return "lecture-form";
     }
 
+    // 创建Lecture
     @PostMapping("/admin/lecture/new")
     public String createLecture(@ModelAttribute("form") @Valid Form form,
-                                BindingResult result,
-                                @RequestParam("files") MultipartFile[] files) throws IOException {
+                                BindingResult result) {
         if (result.hasErrors()) return "lecture-form";
-
-        Lecture saved = lectureService.createLecture(form.getTitle(), form.getSummary());
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                lectureService.saveAttachment(saved.getId(), file);
-            }
+        try {
+            lectureService.createLecture(form.getCoursecode(), form.getTitle(), form.getSummary());
+        } catch (ResourceNotFoundException e) {
+            return "lecture-form";
         }
-        return "redirect:/lecture/" + saved.getId();
-    }
-
-    @PostMapping("/admin/lecture/{id}/delete")
-    public String deleteLecture(@PathVariable Long id) {
-        lectureService.deleteById(id);
         return "redirect:/";
     }
 
-    @PostMapping("/lecture/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestParam String content, Principal principal) {
-        lectureService.addComment(id, principal.getName(), content);
-        return "redirect:/lecture/" + id;
+    // 删除Lecture
+    @PostMapping("/admin/lecture/{L_id}/delete")
+    public String deleteLecture(@PathVariable String L_id) {
+        try {
+            lectureService.deleteLecture(L_id);
+        } catch (ResourceNotFoundException e) {
+            // 处理异常
+        }
+        return "redirect:/";
+    }
+
+    // 添加评论
+    @PostMapping("/lecture/{L_id}/comment")
+    public String addComment(@PathVariable String L_id, @RequestParam String content, Principal principal) {
+        try {
+            commentService.addCommentToLecture(principal.getName(), L_id, content);
+        } catch (ResourceNotFoundException e) {
+            // 处理异常
+        }
+        return "redirect:/lecture/" + L_id;
     }
 }
