@@ -5,21 +5,30 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 public class Lecture {
     @Id
     @GeneratedValue
     private String L_id;
-    private String course_id;
+    private String coursecode;
     private String title;
     private String summary;
     @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
-    private ArrayList<String> comments = new ArrayList<>();
+    private List<String> comments = new ArrayList<>();
 
-    public String getCourse_id(){
-        return course_id;
+    public Lecture(){}
+
+    public Lecture(String cc, String t, String s){
+        coursecode=cc;
+        title=t;
+        summary=s;
+    }
+
+    public String getCoursecode(){
+        return coursecode;
     }
 
     public String getTitle() {
@@ -30,6 +39,14 @@ public class Lecture {
         return summary;
     }
 
+    public List<String> getComments(){
+        return comments;
+    }
+
+    public void setComments(List<String> c){
+        comments=c;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -38,8 +55,8 @@ public class Lecture {
         this.summary = summary;
     }
 
-    public void setCourse_id(String course_id){
-        this.course_id=course_id;
+    public void setCoursecode(String coursecode){
+        this.coursecode=coursecode;
     }
 
     public List<Attachment> getAttachments() {

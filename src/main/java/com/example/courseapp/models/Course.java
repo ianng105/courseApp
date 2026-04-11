@@ -8,20 +8,30 @@ import java.util.List;
 @Entity
 public class Course {
     @Id
-    @GeneratedValue
-    private String course_id ;
-    private String title;
     private String coursecode;
+    private String title;
+
     private String description;
 
+
     @OneToMany
-    @JoinColumn
     private ArrayList<Lecture>lectures=new ArrayList<>() ;
 
+    @OneToMany
+    private List<Poll>polls=new ArrayList<>();
+
     @ManyToMany
-    private ArrayList<Student> students= new ArrayList<>();
-    @ManyToMany
-    private List<Teacher> teachers= new ArrayList<>();
+    private List<Users> users= new ArrayList<>();
+
+    public Course (){}
+
+    public  Course(String t, String cc, String d){
+        title=t;
+        coursecode=cc;
+        description=d;
+
+    }
+
 
     public String getTitle(){
         return title;
@@ -35,9 +45,7 @@ public class Course {
         return description;
     }
 
-    public ArrayList<Lecture> getLectures(){
-        return lectures;
-    }
+    public List<Lecture> getLectures(){return lectures;}
 
     public void setTitle(String title){
         this.title=title;
@@ -46,6 +54,8 @@ public class Course {
     public void setCoursecode(String coursecode){
         this.coursecode=coursecode;
     }
+
+    public void setDescription(String description){this.description=description;}
 
     public void addLecture(Lecture lecture){
        lectures.add(lecture);

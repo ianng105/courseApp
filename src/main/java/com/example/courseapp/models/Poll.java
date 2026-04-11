@@ -1,19 +1,30 @@
 package com.example.courseapp.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @Entity
 public class Poll {
     @Id
     @GeneratedValue
-    private String id;
+    private String poll_id;
     private String question;
-    private ArrayList<Choice> choices=new ArrayList<>();
+
+    @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private ArrayList<Choice> choices=new ArrayList<>(5);
+
+    @Column(name="course_id", insertable=false, updatable=false)
+    private String course_id;
+
+    @ManyToOne
+    @JoinColumn(name="course_id")
+    private Course course;
+
+    public String getQuestion(){
+        return question ;
+    }
+
 }
