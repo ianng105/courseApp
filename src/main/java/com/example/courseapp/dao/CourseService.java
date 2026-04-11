@@ -68,6 +68,7 @@ public class CourseService {
         c.removeLecture(l);
         cRepo.save(c);
     }
+
     @Transactional
     public List<Course> getAllCourses() {
         return cRepo.findAll();

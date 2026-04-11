@@ -18,9 +18,11 @@ public class Lecture {
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "lecture", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
 
     public Lecture(){}
 
@@ -42,9 +44,11 @@ public class Lecture {
         return summary;
     }
 
+
     public List<Comment> getComments() { return comments; }
 
     public void setComments(List<Comment> c) { comments = c; }
+
 
     public void setTitle(String title) {
         this.title = title;

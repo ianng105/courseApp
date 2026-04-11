@@ -1,3 +1,4 @@
+
 package com.example.courseapp.exceptions;
 
 public class InvalidCourseCode extends Exception {
