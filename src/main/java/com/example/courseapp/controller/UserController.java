@@ -125,6 +125,18 @@ public class UserController {
     public String deleteUser(@PathVariable String username, Authentication auth) {
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
             us.delete(username);
+            logger.info("student "+username+" deleted");
+        }
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/admin/user/{username}/update")
+    public String updateUser(@PathVariable String username,@ModelAttribute("Users") @Valid Form form, BindingResult result, Authentication auth)
+        throws InvalidPhoneNumber,InvalidEmail{
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
+
+            us.update(username, form.getFullname(), form.getPassword(), form.getEmail(), form.getPhonenum());
+            logger.info("student "+username+" full name "+form.getFullname()+" password "+form.getPassword()+" email "+form.getEmail()+" phone number "+form.getPhonenum());
         }
         return "redirect:/admin/users";
     }
