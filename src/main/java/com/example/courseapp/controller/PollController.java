@@ -70,7 +70,7 @@ public class PollController {
 
     @PostMapping("/admin/poll/{id}/delete")
     public String deletePoll(@PathVariable Long id) {
-        pollService.deleteById(id);
+        pollService.deletePoll(id);
         return "redirect:/";
     }
 
