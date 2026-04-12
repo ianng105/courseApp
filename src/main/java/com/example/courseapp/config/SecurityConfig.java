@@ -24,11 +24,13 @@ public class SecurityConfig {
                         .requestMatchers("/poll/*/vote").authenticated()
                         .requestMatchers("/poll/*/comment").authenticated()
                         .requestMatchers("/lecture/*/comment").authenticated()
+
                         // 其余公开
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )

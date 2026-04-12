@@ -7,6 +7,7 @@ import com.example.courseapp.exceptions.ResourceNotFoundException;
 import com.example.courseapp.models.Users;
 import com.example.courseapp.validator.UserValidator;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -85,7 +86,7 @@ public class UserController {
 
     // 注册提交
     @PostMapping("/create")
-    public String create(@ModelAttribute("Users") @Valid Form form, BindingResult result)
+    public String create(@ModelAttribute("Users") @Valid Form form, BindingResult result, HttpSession session)
             throws IOException, InvalidEmail, InvalidPhoneNumber {
         uv.validate(form, result);
         if (result.hasErrors()) {
@@ -94,6 +95,8 @@ public class UserController {
 
         if (form.getIdentity().equals("student")) {
             us.createStudent(form.getUsername(), form.getFullname(), form.getPassword(), form.getEmail(), form.getPhonenum());
+            session.setAttribute("username",form.getUsername());
+            session.setAttribute("role",form.getIdentity());
             logger.info("Student {} created.", form.getUsername());
         } else {
             us.createTeacher(form.getUsername(), form.getFullname(), form.getPassword(), form.getEmail(), form.getPhonenum());
@@ -102,13 +105,15 @@ public class UserController {
         return "redirect:/";
     }
 
-    // 个人资料页
+    /* 个人资料页
     @GetMapping("/profile")
     public String profile(Principal principal, Model model) {
         Users user = us.getUserByUsername(principal.getName());
         model.addAttribute("user", user);
         return "profile";
     }
+
+     */
 
     // 管理员查看所有用户
     @GetMapping("/admin/users")

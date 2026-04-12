@@ -74,4 +74,15 @@ public class CourseService {
         return cRepo.findAll();
     }
 
+    @Transactional
+    public Course getCourse(String coursecode)
+        throws ResourceNotFoundException{
+        Course c=cRepo.findById(coursecode).orElse(null);
+        if(c==null){
+            throw new ResourceNotFoundException("this course does not exists");
+        }
+        return c;
+    }
+
+
 }
