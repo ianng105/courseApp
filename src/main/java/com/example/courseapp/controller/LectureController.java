@@ -45,7 +45,6 @@ public class LectureController {
         public void setSummary(String summary) { this.summary = summary; }
     }
 
-    // 查看单个Lecture
     @GetMapping("/lecture/{L_id}")
     public String viewLecture(@PathVariable String L_id, Model model, Principal principal) {
         try {
@@ -60,14 +59,12 @@ public class LectureController {
         }
     }
 
-    // 新建Lecture表单页面
     @GetMapping("/admin/lecture/new")
     public String newLectureForm(Model model) {
         model.addAttribute("form", new Form());
         return "lecture-form";
     }
 
-    // 创建Lecture
     @PostMapping("/admin/lecture/new")
     public String createLecture(@ModelAttribute("form") @Valid Form form,
                                 BindingResult result) {
@@ -80,24 +77,20 @@ public class LectureController {
         return "redirect:/";
     }
 
-    // 删除Lecture
     @PostMapping("/admin/lecture/{L_id}/delete")
     public String deleteLecture(@PathVariable String L_id) {
         try {
             lectureService.deleteLecture(L_id);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/";
     }
 
-    // 添加评论
     @PostMapping("/lecture/{L_id}/comment")
     public String addComment(@PathVariable String L_id, @RequestParam String content, Principal principal) {
         try {
             commentService.addCommentToLecture(principal.getName(), L_id, content);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/lecture/" + L_id;
     }
