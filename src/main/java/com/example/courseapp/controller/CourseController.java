@@ -71,14 +71,14 @@ public class CourseController {
     }
 
     // 创建课程 - 表单页面
-    @GetMapping("course/new")
+    @GetMapping("/admin/course/new")
     // Accept this version
     public ModelAndView newCourseForm(Model model) {
         return new ModelAndView("course-form", "Course", new CourseController.Form());
     }
 
     // 创建课程 - 提交
-    @PostMapping("course/new")
+    @PostMapping("/admin/course/new")
     public String createCourse(@ModelAttribute("Course") @Valid CourseController.Form form, BindingResult result, Model model) {
         if (result.hasErrors()) return "course-form";
         try {

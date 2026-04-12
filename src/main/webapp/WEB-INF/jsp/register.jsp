@@ -35,6 +35,6 @@
         <form:radiobutton path="identity" value="teacher"/>Teacher
     <br/><br/>
     <input type="submit" value="Add User"/>
-</form:form>>
+</form:form>
 </body>
 </html>
