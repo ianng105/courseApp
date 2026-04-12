@@ -25,7 +25,7 @@ public class PollService {
 
     // 创建Poll并添加选项
     @Transactional
-    public void createPoll(String coursecode, String question, List<String> choiceTexts)
+    public Poll createPoll(String coursecode, String question, List<String> choiceTexts)
             throws ResourceNotFoundException {
         Course course = cRepo.findById(coursecode).orElse(null);
         if (course == null) {
@@ -39,6 +39,7 @@ public class PollService {
             poll.addChoice(choice);
         }
         pRepo.save(poll);
+        return poll;
     }
 
     // 删除Poll
@@ -86,5 +87,12 @@ public class PollService {
     @Transactional
     public List<Poll> getAllPolls() {
         return pRepo.findAll();
+    }
+
+    @Transactional
+    public void createChoice(String choice,Poll p){
+        Choice ch = new Choice(choice,p);
+        chRepo.save(ch);
+
     }
 }

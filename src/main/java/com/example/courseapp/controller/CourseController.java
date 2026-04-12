@@ -3,6 +3,7 @@ package com.example.courseapp.controller;
 import com.example.courseapp.dao.CourseService;
 import com.example.courseapp.exceptions.InvalidCourseCode;
 import com.example.courseapp.exceptions.ResourceNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class CourseController {
@@ -69,15 +71,15 @@ public class CourseController {
     }
 
     // 创建课程 - 表单页面
-    @GetMapping("/admin/course/new")
-    public String newCourseForm(Model model) {
-        model.addAttribute("form", new Form());
-        return "course-form";
+    @GetMapping("course/new")
+    // Accept this version
+    public ModelAndView newCourseForm(Model model) {
+        return new ModelAndView("course-form", "Course", new CourseController.Form());
     }
 
     // 创建课程 - 提交
-    @PostMapping("/admin/course/new")
-    public String createCourse(@ModelAttribute("form") @Valid Form form, BindingResult result, Model model) {
+    @PostMapping("course/new")
+    public String createCourse(@ModelAttribute("Course") @Valid CourseController.Form form, BindingResult result, Model model) {
         if (result.hasErrors()) return "course-form";
         try {
             courseService.createNewCourse(
