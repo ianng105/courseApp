@@ -23,7 +23,6 @@ public class PollService {
     @Resource
     private ChoiceRepository chRepo;
 
-    // 创建Poll并添加选项
     @Transactional
     public void createPoll(String coursecode, String question, List<String> choiceTexts)
             throws ResourceNotFoundException {
@@ -33,7 +32,6 @@ public class PollService {
         }
 
         Poll poll = new Poll(question, course);
-        // 为每个选项文本创建Choice并关联到Poll
         for (String text : choiceTexts) {
             Choice choice = new Choice(text, poll);
             poll.addChoice(choice);
@@ -41,7 +39,6 @@ public class PollService {
         pRepo.save(poll);
     }
 
-    // 删除Poll
     @Transactional
     public void deletePoll(String pollId) throws ResourceNotFoundException {
         Poll poll = pRepo.findById(pollId).orElse(null);
@@ -51,7 +48,6 @@ public class PollService {
         pRepo.delete(poll);
     }
 
-    // 查找某门课的所有Poll
     @Transactional
     public List<Poll> getPollsByCourse(String coursecode) throws ResourceNotFoundException {
         Course course = cRepo.findById(coursecode).orElse(null);
@@ -61,7 +57,6 @@ public class PollService {
         return pRepo.findByCourse(course);
     }
 
-    // 查找单个Poll
     @Transactional
     public Poll getPollById(String pollId) throws ResourceNotFoundException {
         Poll poll = pRepo.findById(pollId).orElse(null);
@@ -71,7 +66,6 @@ public class PollService {
         return poll;
     }
 
-    // 投票：给某个Choice的票数+1
     @Transactional
     public void vote(UUID choiceId) throws ResourceNotFoundException {
         Choice choice = chRepo.findById(choiceId).orElse(null);
@@ -82,7 +76,6 @@ public class PollService {
         chRepo.save(choice);
     }
 
-    // 查找所有Poll
     @Transactional
     public List<Poll> getAllPolls() {
         return pRepo.findAll();
