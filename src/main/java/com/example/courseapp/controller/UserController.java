@@ -23,6 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -78,6 +81,12 @@ public class UserController {
         public void setIdentity(String identity) { this.identity = identity; }
     }
 
+    public static class SearchUserForm {
+        private String username;
+        public String getUsername(){return username;}
+        public void setUsername(String u){username=u;}
+    }
+
     // 注册页面
     @GetMapping("/create")
     public ModelAndView create() {
@@ -124,9 +133,9 @@ public class UserController {
 
     // 管理员删除用户
     @PostMapping("/admin/user/{username}/delete")
-    public String deleteUser(@PathVariable String username) {
+    public ModelAndView deleteUser(@PathVariable String username) {
         us.delete(username);
-        return "redirect:/admin/users";
+        return new ModelAndView("studentmanage","Searchform",new SearchUserForm());
     }
 
     // 用户添加课程
@@ -149,5 +158,12 @@ public class UserController {
             // 处理异常
         }
         return "redirect:/profile";
+    }
+
+
+    @PostMapping("/admin/studentmanage/")
+    public String SearchUser(@ModelAttribute("Searchform") @Valid SearchUserForm form, BindingResult result,Model model){
+       String un=form.username;
+       return "redirect:/admin/studentmanage/"+un;
     }
 }

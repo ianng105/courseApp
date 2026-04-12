@@ -15,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -59,12 +61,25 @@ public class IndexController {
 
     }
 
-    @GetMapping("/admin/studentmanage")
-    public String StuManage(Model model){
+    @GetMapping("/admin/studentmanage/")
+    public ModelAndView StuManage(){
         List<Users> users = us.getUsers();
-        model.addAttribute("userlist",users);
-        return "studentmanage";
+        ModelAndView mav = new ModelAndView("studentmanage");
+        mav.addObject("userlist",users);
+        mav.addObject("Searchform",new UserController.SearchUserForm());
+        return mav;
     }
+
+    @GetMapping("/admin/studentmanage/{username}")
+    public ModelAndView StuManage2(@PathVariable String username){
+        ModelAndView mav = new ModelAndView("studentmanage");
+        Users stu=us.getUserByUsername(username);
+        mav.addObject("userlist", Collections.singletonList(stu));
+        mav.addObject("Searchform",new UserController.SearchUserForm());
+        return mav;
+
+    }
+
 
     @GetMapping("/pollPage/{pollId}")
     public String pollPage(@PathVariable String pollId, Model model){
