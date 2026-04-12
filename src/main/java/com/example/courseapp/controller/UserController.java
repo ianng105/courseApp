@@ -33,7 +33,6 @@ public class UserController {
     @Resource
     UserService us;
 
-    // ===== 注册表单对象 =====
     public static class Form {
         @NotEmpty(message = "Please enter your user name.")
         private String username;
@@ -77,13 +76,11 @@ public class UserController {
         public void setIdentity(String identity) { this.identity = identity; }
     }
 
-    // 注册页面
     @GetMapping("/create")
     public ModelAndView create() {
         return new ModelAndView("register", "Users", new Form());
     }
 
-    // 注册提交
     @PostMapping("/create")
     public String create(@ModelAttribute("Users") @Valid Form form, BindingResult result)
             throws IOException, InvalidEmail, InvalidPhoneNumber {
@@ -102,7 +99,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    // 个人资料页
     @GetMapping("/profile")
     public String profile(Principal principal, Model model) {
         Users user = us.getUserByUsername(principal.getName());
@@ -110,7 +106,6 @@ public class UserController {
         return "profile";
     }
 
-    // 管理员查看所有用户
     @GetMapping("/admin/users")
     public String adminUsers(Model model, Authentication auth) {
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
@@ -120,7 +115,6 @@ public class UserController {
         return "admin-users";
     }
 
-    // 管理员删除用户
     @PostMapping("/admin/user/{username}/delete")
     public String deleteUser(@PathVariable String username, Authentication auth) {
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
@@ -141,24 +135,20 @@ public class UserController {
         return "redirect:/admin/users";
     }
 
-    // 用户添加课程
     @PostMapping("/profile/addCourse")
     public String addCourse(@RequestParam String coursecode, Principal principal) {
         try {
             us.addCourse(principal.getName(), coursecode);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/profile";
     }
 
-    // 用户移除课程
     @PostMapping("/profile/removeCourse")
     public String removeCourse(@RequestParam String coursecode, Principal principal) {
         try {
             us.removeCourse(principal.getName(), coursecode);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/profile";
     }
