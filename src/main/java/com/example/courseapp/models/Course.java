@@ -15,7 +15,7 @@ public class Course {
 
 
     @OneToMany
-    private ArrayList<Lecture>lectures=new ArrayList<>() ;
+    private List<Lecture>lectures=new ArrayList<>() ;
 
     @OneToMany
     private List<Poll>polls=new ArrayList<>();
