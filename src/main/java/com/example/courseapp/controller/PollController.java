@@ -31,7 +31,6 @@ public class PollController {
     @Autowired
     private VoteService voteService;
 
-    // ===== 表单对象 =====
     public static class Form {
         @NotEmpty
         @Size(min = 3, max = 30)
@@ -52,7 +51,6 @@ public class PollController {
         public void setChoiceTexts(List<String> choiceTexts) { this.choiceTexts = choiceTexts; }
     }
 
-    // 查看单个Poll
     @GetMapping("/poll/{pollId}")
     public String viewPoll(@PathVariable String pollId, Model model, Principal principal) {
         try {
@@ -72,25 +70,21 @@ public class PollController {
         }
     }
 
-    // 投票
     @PostMapping("/poll/{pollId}/vote")
     public String vote(@PathVariable String pollId, @RequestParam UUID choiceId, Principal principal) {
         try {
             voteService.vote(principal.getName(), pollId, choiceId);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/poll/" + pollId;
     }
 
-    // 新建Poll表单页面
     @GetMapping("/admin/poll/new")
     public String newPollForm(Model model) {
         model.addAttribute("form", new Form());
         return "poll-form";
     }
 
-    // 创建Poll
     @PostMapping("/admin/poll/new")
     public String createPoll(@ModelAttribute("form") @Valid Form form, BindingResult result) {
         if (result.hasErrors() || form.getChoiceTexts().size() != 5) {
@@ -104,24 +98,20 @@ public class PollController {
         return "redirect:/";
     }
 
-    // 删除Poll
     @PostMapping("/admin/poll/{pollId}/delete")
     public String deletePoll(@PathVariable String pollId) {
         try {
             pollService.deletePoll(pollId);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/";
     }
 
-    // 添加评论
     @PostMapping("/poll/{pollId}/comment")
     public String addComment(@PathVariable String pollId, @RequestParam String content, Principal principal) {
         try {
             commentService.addCommentToPoll(principal.getName(), pollId, content);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/poll/" + pollId;
     }
