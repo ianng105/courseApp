@@ -19,20 +19,19 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    // ===== 创建课程的表单对象 =====
     public static class Form {
         @NotEmpty
         private String title;
 
         @NotEmpty
         @Size(min = 2, message = "Course title should have at least 2 characters")
-        private String coursecode1;   // 如 "CS"
+        private String coursecode1;   
 
         @Min(value = 1000, message = "Course number should be >= 1000")
-        private int coursecode2;      // 如 1234
+        private int coursecode2;     
 
         @NotEmpty
-        private String coursecode3;   // "F" 或 "SEF"
+        private String coursecode3;  
 
         @NotEmpty
         @Size(max = 100, message = "Description too long")
@@ -54,7 +53,6 @@ public class CourseController {
         public void setDescription(String description) { this.description = description; }
     }
 
-    // ===== 添加Lecture的表单对象 =====
     public static class LectureForm {
         @NotEmpty
         private String title;
@@ -68,14 +66,14 @@ public class CourseController {
         public void setSummary(String summary) { this.summary = summary; }
     }
 
-    // 创建课程 - 表单页面
+  
     @GetMapping("/admin/course/new")
     public String newCourseForm(Model model) {
         model.addAttribute("form", new Form());
         return "course-form";
     }
 
-    // 创建课程 - 提交
+   
     @PostMapping("/admin/course/new")
     public String createCourse(@ModelAttribute("form") @Valid Form form, BindingResult result, Model model) {
         if (result.hasErrors()) return "course-form";
@@ -94,18 +92,18 @@ public class CourseController {
         return "redirect:/";
     }
 
-    // 删除课程
+  
     @PostMapping("/admin/course/{coursecode}/delete")
     public String deleteCourse(@PathVariable String coursecode) {
         try {
             courseService.deleteCourse(coursecode);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
+           
         }
         return "redirect:/";
     }
 
-    // 给课程添加Lecture - 表单页面
+  
     @GetMapping("/admin/course/{coursecode}/lecture/new")
     public String newLectureForm(@PathVariable String coursecode, Model model) {
         model.addAttribute("coursecode", coursecode);
@@ -113,7 +111,7 @@ public class CourseController {
         return "lecture-form";
     }
 
-    // 给课程添加Lecture - 提交
+  
     @PostMapping("/admin/course/{coursecode}/lecture/new")
     public String addLecture(@PathVariable String coursecode,
                              @ModelAttribute("lectureForm") @Valid LectureForm form,
@@ -127,13 +125,12 @@ public class CourseController {
         return "redirect:/";
     }
 
-    // 从课程中移除Lecture
+   
     @PostMapping("/admin/course/{coursecode}/lecture/{L_id}/remove")
     public String removeLecture(@PathVariable String coursecode, @PathVariable String L_id) {
         try {
             courseService.removeLecture(coursecode, L_id);
         } catch (ResourceNotFoundException e) {
-            // 处理异常
         }
         return "redirect:/";
     }
