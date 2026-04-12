@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -84,20 +85,22 @@ public class PollController {
     }
 
     // 新建Poll表单页面
-    @GetMapping("/admin/poll/new")
-    public String newPollForm(Model model) {
-        model.addAttribute("form", new Form());
-        return "poll-form";
+    @GetMapping(/*/admin*/"/poll/new")
+    public ModelAndView newPollForm() {
+        return new ModelAndView("poll-form", "Poll", new PollController.Form());
     }
 
     // 创建Poll
-    @PostMapping("/admin/poll/new")
-    public String createPoll(@ModelAttribute("form") @Valid Form form, BindingResult result) {
+    @PostMapping(/*admin*/"/poll/new")
+    public String createPoll(@ModelAttribute("Poll") @Valid Form form, BindingResult result) {
         if (result.hasErrors() || form.getChoiceTexts().size() != 5) {
             return "poll-form";
         }
         try {
-            pollService.createPoll(form.getCoursecode(), form.getQuestion(), form.getChoiceTexts());
+            Poll p=pollService.createPoll(form.getCoursecode(), form.getQuestion(), form.getChoiceTexts());
+            for(String i:form.getChoiceTexts()){
+                pollService.createChoice(i,p);
+            }
         } catch (ResourceNotFoundException e) {
             return "poll-form";
         }

@@ -14,7 +14,7 @@ public class Poll {
 
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Choice> choices = new ArrayList<>(5);
+    private List<Choice> choices = new ArrayList<>(5);
 
     @Column(name = "course_id", insertable = false, updatable = false)
     private String course_id;
@@ -38,7 +38,7 @@ public class Poll {
     // ===== Getter =====
     public String getPoll_id() { return poll_id; }
     public String getQuestion() { return question; }
-    public ArrayList<Choice> getChoices() { return choices; }
+    public List<Choice> getChoices() { return choices; }
     public Course getCourse() { return course; }
     public List<Comment> getComments() { return comments; }
 
