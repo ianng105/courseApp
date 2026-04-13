@@ -29,6 +29,12 @@
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
 
+            <c:url var="edit" value="/admin/profile/${u.username}"/>
+            <form action="${edit}" method="get">
+                <input type="submit" value="EDIT" />
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+
         </c:if>
     </div>
 </c:forEach>
