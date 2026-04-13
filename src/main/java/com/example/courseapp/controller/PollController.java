@@ -4,6 +4,7 @@ import com.example.courseapp.dao.CommentService;
 import com.example.courseapp.dao.PollService;
 import com.example.courseapp.dao.VoteService;
 import com.example.courseapp.exceptions.ResourceNotFoundException;
+import com.example.courseapp.models.Choice;
 import com.example.courseapp.models.Poll;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -53,35 +54,73 @@ public class PollController {
         public void setChoiceTexts(List<String> choiceTexts) { this.choiceTexts = choiceTexts; }
     }
 
+    public static class VoteForm {
+        private String ch;
+
+
+        public String getCh() {
+            return ch;
+        }
+
+        public void setCh(String c) {
+            ch=c;
+        }
+
+    }
+
     // 查看单个Poll
-    @GetMapping("/poll/{pollId}")
-    public String viewPoll(@PathVariable String pollId, Model model, Principal principal) {
+    @GetMapping("/pollpage/{pollId}")
+    public ModelAndView viewPoll(@PathVariable String pollId, @Valid VoteForm form,Principal principal) {
         try {
             Poll poll = pollService.getPollById(pollId);
-            model.addAttribute("poll", poll);
-            model.addAttribute("choices", poll.getChoices());
-            model.addAttribute("comments", commentService.getCommentsByPoll(pollId));
-            model.addAttribute("currentUser", principal.getName());
+            ModelAndView mav = new ModelAndView("poll");
+            mav.addObject("Poll", poll);
+            mav.addObject("choices", poll.getChoices());
+            mav.addObject("comments", commentService.getCommentsByPoll(pollId));
+            mav.addObject("currentUser", principal.getName());
+            mav.addObject("Vote",form);
             try {
-                model.addAttribute("userVote", voteService.getVoteByUserAndPoll(principal.getName(), pollId));
-            } catch (ResourceNotFoundException e) {
-                model.addAttribute("userVote", null);
+                mav.addObject("userVote", voteService.getVoteByUserAndPoll(principal.getName(), pollId));
             }
-            return "poll";
+                catch(ResourceNotFoundException e) {
+                mav.addObject("userVote", null);
+            }
+            return mav;
         } catch (ResourceNotFoundException e) {
-            return "redirect:/";
+            return new ModelAndView ("/");
         }
     }
 
     // 投票
-    @PostMapping("/poll/{pollId}/vote")
-    public String vote(@PathVariable String pollId, @RequestParam UUID choiceId, Principal principal) {
+    @PostMapping("/pollpage/{pollId}")
+    public String vote(@PathVariable String pollId, Principal principal,@Valid VoteForm form) {
         try {
+            Poll poll = pollService.getPollById(pollId);
+            List<Choice> choiceList = poll.getChoices();
+            Choice choice;
+            UUID choiceId=null ;
+            if (form.getCh().equals("ch0")) {
+                choice = choiceList.get(0);
+                choiceId = choice.getId();
+            } else if (form.getCh().equals("ch1")) {
+                choice = choiceList.get(1);
+                choiceId = choice.getId();
+            } else if (form.getCh().equals("ch2")) {
+                choice = choiceList.get(2);
+                choiceId = choice.getId();
+            } else if (form.getCh().equals("ch3")) {
+                choice = choiceList.get(3);
+                choiceId = choice.getId();
+            } else {
+                choice = choiceList.get(4);
+                choiceId = choice.getId();
+            }
+
             voteService.vote(principal.getName(), pollId, choiceId);
         } catch (ResourceNotFoundException e) {
             // 处理异常
         }
-        return "redirect:/poll/" + pollId;
+        return "redirect:/pollpage/"+ pollId;
     }
 
     // 新建Poll表单页面

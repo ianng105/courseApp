@@ -9,10 +9,10 @@
 
         //these path are just for testing
         function goToCoursePage(){
-            window.location.href = "<c:url value='course/new' />";
+            window.location.href = 'course/new';
         }
-        function goToPollPage(){
-            window.location.href = "<c:url value='poll/new' />";
+        function goToPollPage(pollId) {
+            window.location.href = "pollpage/"+pollId;
         }
     </script>
 </head>
@@ -30,7 +30,7 @@
 
 <h2>Poll</h2>
 <c:forEach items="${polls}" var="poll">
-    <div onclick="goToPollPage()">
+    <div onclick="goToPollPage('${poll.poll_id}')">
         <p><c:out value="${poll.question}"/></p>
         <br>
     </div>
