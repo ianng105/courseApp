@@ -114,14 +114,11 @@ public class UserController {
         return "redirect:/";
     }
 
+
     // 个人资料页
     @GetMapping("/admin/profile/{username}")
     public String profile(@PathVariable String username, Model model) {
         Users user = us.getUserByUsername(username);
-        model.addAttribute("user", user);
-        return "profile";
-    }
-
 
 
     // 管理员查看所有用户
