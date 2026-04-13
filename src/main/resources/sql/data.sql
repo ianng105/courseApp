@@ -1,5 +1,5 @@
 insert into lecture (lecture_title)
-values ('1. Web Application Course Guide');
+values ('Web Application Course Guide');
 
 INSERT INTO users VALUES ('stan', '{noop}stanpw', 'legendLee@outlook.com','Stan Lee', '54617846');
 INSERT INTO user_roles(username, role) VALUES ('stan', 'ROLE_ADMIN');

@@ -3,25 +3,35 @@ package com.example.courseapp.models;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Course {
     @Id
-    @GeneratedValue
-    private String course_id ;
-    private String title;
     private String coursecode;
+    private String title;
+
     private String description;
 
 
     @OneToMany
-    private ArrayList<Lecture>lectures=new ArrayList<>() ;
+    private List<Lecture>lectures=new ArrayList<>() ;
 
     @OneToMany
-    private ArrayList<Poll>polls=new ArrayList<>();
+    private List<Poll>polls=new ArrayList<>();
 
     @ManyToMany
-    private ArrayList<User> users= new ArrayList<>();
+    private List<Users> users= new ArrayList<>();
+
+    public Course (){}
+
+    public  Course(String t, String cc, String d){
+        title=t;
+        coursecode=cc;
+        description=d;
+
+    }
+
 
     public String getTitle(){
         return title;
@@ -35,7 +45,7 @@ public class Course {
         return description;
     }
 
-    public ArrayList<Lecture> getLectures(){return lectures;}
+    public List<Lecture> getLectures(){return lectures;}
 
     public void setTitle(String title){
         this.title=title;

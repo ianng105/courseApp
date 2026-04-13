@@ -17,13 +17,20 @@ public class SecurityConfig {
             throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/**").hasRole("ADMIN")
-                        .requestMatchers("/ticket/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/ticket/**").hasAnyRole("USER", "ADMIN")
+                        // teacher 才能访问 /admin/** 路径
+                        .requestMatchers("/admin/**").hasRole("TEACHER")
+                        // 需要登录才能访问的页面
+                        .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers("/poll/*/vote").authenticated()
+                        .requestMatchers("/poll/*/comment").authenticated()
+                        .requestMatchers("/lecture/*/comment").authenticated()
+
+                        // 其余公开
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
