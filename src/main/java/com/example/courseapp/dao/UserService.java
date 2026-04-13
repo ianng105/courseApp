@@ -46,64 +46,12 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
-    //create user(student)
-    @Transactional
-    public void createStudent(String username, String fullname, String password, String email, String phonenum)
-        throws InvalidEmail, InvalidPhoneNumber{
-        if(phonenum.length()<8){
-            throw new InvalidPhoneNumber();
-        }
-        int phn = Integer.parseInt(phonenum);
-        if (!email.contains("@")){
-            throw new InvalidEmail(email);
-        }
-        Users newUser = new Users(username,fullname,password,email,phn,"student");
-        uRepo.save(newUser);
-    }
 
-    //(teacher)
-    @Transactional
-    public void createTeacher(String username, String fullname, String password, String email, String phonenum)
-            throws InvalidEmail, InvalidPhoneNumber{
-        if(phonenum.length()<8){
-            throw new InvalidPhoneNumber();
-        }
-        int phn = Integer.parseInt(phonenum);
-        if (!email.contains("@")){
-            throw new InvalidEmail(email);
-        }
-        Users newUser = new Users(username,fullname,pe.encode(password),email,phn,"teacher");
-        uRepo.save(newUser);
-    }
 
     //read user information
     @Transactional
     public List<Users> getUsers(){
         return uRepo.findAll();
-    }
-
-
-    @Transactional
-    public void update(String username, String fullname, String password, String email, String phonenum)
-        throws InvalidEmail,InvalidPhoneNumber{
-        Users target=uRepo.findById(username).orElse(null);
-        if (target == null) {
-            throw new UsernameNotFoundException("User '" + username + "' not found.");
-        }
-        if(phonenum.length()<8){
-            throw new InvalidPhoneNumber();
-        }
-        int phn = Integer.parseInt(phonenum);
-        if (!email.contains("@")){
-            throw new InvalidEmail(email);
-        }
-        target.setUsername(username);
-        target.setFullname(fullname);
-        target.setPassword(password);
-        target.setEmail(email);
-        target.setPhonenum(phn);
-        uRepo.save(target);
-
     }
 
 
@@ -152,6 +100,34 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
         return user;
+    }
+    @Transactional
+    public void createStudent(String username, String fullname, String password, String email, String phonenum)
+            throws InvalidEmail, InvalidPhoneNumber {
+        if (phonenum.length() < 8) {
+            throw new InvalidPhoneNumber();
+        }
+        int phn = Integer.parseInt(phonenum);
+        if (!email.contains("@")) {
+            throw new InvalidEmail(email);
+        }
+        Users newUser = new Users(username, fullname, pe.encode(password), email, phn, "student");
+        newUser.setRole("ROLE_USER");
+        uRepo.save(newUser);
+    }
+    @Transactional
+    public void createTeacher(String username, String fullname, String password, String email, String phonenum)
+            throws InvalidEmail, InvalidPhoneNumber {
+        if (phonenum.length() < 8) {
+            throw new InvalidPhoneNumber();
+        }
+        int phn = Integer.parseInt(phonenum);
+        if (!email.contains("@")) {
+            throw new InvalidEmail(email);
+        }
+        Users newUser = new Users(username, fullname, pe.encode(password), email, phn, "teacher");
+        newUser.setRole("ROLE_TEACHER");
+        uRepo.save(newUser);
     }
 }
 

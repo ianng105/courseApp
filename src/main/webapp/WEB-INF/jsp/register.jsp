@@ -98,61 +98,38 @@
     </style>
 </head>
 <body>
-<div class="form-container">
-    <form action="<c:url value='/register'/>" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-        <h2>Register</h2>
+<h2>Sign-up</h2>
 
-        <c:if test="${bindingResult.hasErrors()}">
-            <div class="error-summary">
-                <p>Please correct the errors below:</p>
-                <ul>
-                    <c:forEach var="error" items="${bindingResult.allErrors}">
-                        <li>${error.defaultMessage}</li>
-                    </c:forEach>
-                </ul>
-            </div>
-        </c:if>
+<form:form method="POST" modelAttribute="Users">
+    <form:label path="username">Username</form:label><br/>
+    <form:errors path="username" cssClass="error" />
+    <form:input type="text" path="username"/><br/><br/>
 
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="${userForm.username}" required>
-        </div>
-        <div class="form-group">
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" value="${userForm.fullname}" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="confirm_password">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="${userForm.email}" required>
-        </div>
-        <div class="form-group">
-            <label for="phonenum">Phone Number:</label>
-            <input type="tel" id="phonenum" name="phonenum" value="${userForm.phonenum}" required>
-        </div>
-        <div class="form-group">
-            <label>Identity:</label>
-            <div class="radio-group">
-                <input type="radio" id="student" name="identity" value="student" checked>
-                <label for="student">Student</label>
-                <input type="radio" id="teacher" name="identity" value="teacher">
-                <label for="teacher">Teacher</label>
-                <input type="radio" id="admin" name="identity" value="admin">
-                <label for="admin">Admin</label>
-            </div>
-        </div>
-        <button type="submit" class="submit-btn">Register</button>
-    </form>
-    <a href="<c:url value='/'/>" class="back-link">Already have an account? Login</a>
-</div>
+    <form:label path="fullname">Fullname</form:label><br/>
+    <form:errors path="fullname" cssClass="error" />
+    <form:input type="text" path="fullname"/><br/><br/>
+
+    <form:label path="email">Email</form:label><br/>
+    <form:errors path="email" cssClass="error" />
+    <form:input type="text" path="email"/><br/><br/>
+
+    <form:label path="phonenum">Phone Number</form:label><br/>
+    <form:errors path="phonenum" cssClass="error" />
+    <form:input type="text" path="phonenum"/><br/><br/>
+    <form:label path="password">Password</form:label><br/>
+    <form:errors path="password" cssClass="error" />
+    <form:input type="text" path="password"/><br/><br/>
+    <form:label path="confirm_password">Confirm Password</form:label><br/>
+    <form:errors path="confirm_password" cssClass="error" />
+    <form:input type="text" path="confirm_password" /><br/><br/>
+    <form:label path="identity">Identity</form:label><br/>
+    <form:errors path="identity" cssClass="error" />
+    <form:radiobutton path="identity" value="student"/>Student
+    <form:radiobutton path="identity" value="teacher"/>Teacher
+    <br/><br/>
+    <input type="submit" value="Add User"/>
+</form:form>
+
 </body>
 </html>

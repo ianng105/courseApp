@@ -25,7 +25,15 @@ public class Users {
 
     private String identity;
 
-    private String role = "USER";
+    private String role = "ROLE_USER";
+
+    public void setToAdmin(){
+        role = "ROLE_ADMIN";
+    }
+
+    public void setToTeacher(){
+        role = "ROLE_TEACHER";
+    }
 
     @ManyToMany
     @JoinTable(name = "user_course", // Name of the bridge table
@@ -105,10 +113,8 @@ public class Users {
         courses.remove(c);
     }
 
-    public void setToAdmin(){
-        role="ADMIN";
+
+    public void setRole(String role) {
+        this.role = role;
     }
-
-
-
 }

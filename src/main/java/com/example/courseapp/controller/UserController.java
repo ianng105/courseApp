@@ -23,6 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -78,6 +81,12 @@ public class UserController {
         public void setIdentity(String identity) { this.identity = identity; }
     }
 
+    public static class SearchUserForm {
+        private String username;
+        public String getUsername(){return username;}
+        public void setUsername(String u){username=u;}
+    }
+
     // 注册页面
     @GetMapping("/create")
     public ModelAndView create() {
@@ -105,45 +114,25 @@ public class UserController {
         return "redirect:/";
     }
 
-    /* 个人资料页
-    @GetMapping("/profile")
-    public String profile(Principal principal, Model model) {
-        Users user = us.getUserByUsername(principal.getName());
-        model.addAttribute("user", user);
-        return "profile";
-    }
 
-     */
+    // 个人资料页
+    @GetMapping("/admin/profile/{username}")
+    public String profile(@PathVariable String username, Model model) {
+        Users user = us.getUserByUsername(username);
+
 
     // 管理员查看所有用户
     @GetMapping("/admin/users")
-    public String adminUsers(Model model, Authentication auth) {
-        if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
-            return "redirect:/";
-        }
+    public String adminUsers(Model model) {
         model.addAttribute("users", us.getUsers());
         return "admin-users";
     }
 
     // 管理员删除用户
     @PostMapping("/admin/user/{username}/delete")
-    public String deleteUser(@PathVariable String username, Authentication auth) {
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
-            us.delete(username);
-            logger.info("student "+username+" deleted");
-        }
-        return "redirect:/admin/users";
-    }
-
-    @PostMapping("/admin/user/{username}/update")
-    public String updateUser(@PathVariable String username,@ModelAttribute("Users") @Valid Form form, BindingResult result, Authentication auth)
-        throws InvalidPhoneNumber,InvalidEmail{
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"))) {
-
-            us.update(username, form.getFullname(), form.getPassword(), form.getEmail(), form.getPhonenum());
-            logger.info("student "+username+" full name "+form.getFullname()+" password "+form.getPassword()+" email "+form.getEmail()+" phone number "+form.getPhonenum());
-        }
-        return "redirect:/admin/users";
+    public ModelAndView deleteUser(@PathVariable String username) {
+        us.delete(username);
+        return new ModelAndView("studentmanage","Searchform",new SearchUserForm());
     }
 
     // 用户添加课程
@@ -166,5 +155,12 @@ public class UserController {
             // 处理异常
         }
         return "redirect:/profile";
+    }
+
+
+    @PostMapping("/admin/studentmanage/")
+    public String SearchUser(@ModelAttribute("Searchform") @Valid SearchUserForm form, BindingResult result,Model model){
+       String un=form.username;
+       return "redirect:/admin/studentmanage/"+un;
     }
 }
