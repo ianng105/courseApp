@@ -12,8 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class LectureController {
@@ -35,6 +38,8 @@ public class LectureController {
         @Size(max = 200, message = "Summary too long")
         private String summary;
 
+        private List<MultipartFile> attachments;
+
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
 
@@ -43,6 +48,14 @@ public class LectureController {
 
         public String getSummary() { return summary; }
         public void setSummary(String summary) { this.summary = summary; }
+
+        public List<MultipartFile> getAttachments() {
+            return attachments;
+        }
+
+        public void setAttachments(List<MultipartFile> attachments) {
+            this.attachments = attachments;
+        }
     }
 
     // 查看单个Lecture
@@ -73,8 +86,12 @@ public class LectureController {
                                 BindingResult result) {
         if (result.hasErrors()) return "lecture-form";
         try {
-            lectureService.createLecture(form.getCoursecode(), form.getTitle(), form.getSummary());
-        } catch (ResourceNotFoundException e) {
+            Lecture l=lectureService.createLecture(form.getCoursecode(), form.getTitle(), form.getSummary());
+            lectureService.addAttachment(l.getL_id(),form.getAttachments());
+        } catch (ResourceNotFoundException e ) {
+            return "lecture-form";
+        }
+        catch(IOException ee){
             return "lecture-form";
         }
         return "redirect:/";

@@ -32,6 +32,10 @@ public class Lecture {
         summary=s;
     }
 
+    public String getL_id(){
+        return L_id;
+    }
+
     public String getCoursecode(){
         return coursecode;
     }
@@ -64,5 +68,13 @@ public class Lecture {
 
     public List<Attachment> getAttachments() {
         return attachments;
+    }
+
+    public void addAttachment(Attachment a) {
+         attachments.add(a);
+    }
+
+    public void removeAttachment(Attachment a) {
+        attachments.remove(a);
     }
 }

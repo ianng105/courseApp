@@ -1,12 +1,15 @@
 package com.example.courseapp.dao;
 
 import com.example.courseapp.exceptions.ResourceNotFoundException;
+import com.example.courseapp.models.Attachment;
 import com.example.courseapp.models.Course;
 import com.example.courseapp.models.Lecture;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -72,7 +75,7 @@ public class LectureService {
     }
     // 创建Lecture
     @Transactional
-    public void createLecture(String coursecode, String title, String summary)
+    public Lecture createLecture(String coursecode, String title, String summary)
             throws ResourceNotFoundException {
         Course course = cRepo.findById(coursecode).orElse(null);
         if (course == null) {
@@ -80,5 +83,26 @@ public class LectureService {
         }
         Lecture lecture = new Lecture(coursecode, title, summary);
         lRepo.save(lecture);
+        return lecture;
     }
+
+    @Transactional
+    public void addAttachment(String L_id,List<MultipartFile> attachments)
+        throws IOException{
+        Lecture l = lRepo.findById(L_id).orElse(null);
+        for(MultipartFile file: attachments){
+            Attachment attachment = new Attachment();
+            attachment.setName(file.getOriginalFilename());
+            attachment.setMimeContentType(file.getContentType());
+            attachment.setContents(file.getBytes());
+            attachment.setLecture(l);
+            if (attachment.getName() != null && attachment.getName().length() > 0
+                    && attachment.getContents() != null
+                    && attachment.getContents().length > 0) {
+                l.addAttachment(attachment);
+            }
+        }
+
+    }
+
 }

@@ -51,4 +51,16 @@ public class Attachment {
     public void setContents(byte[] contents) {
         this.contents = contents;
     }
+
+    public Lecture getLecture(){
+        return lecture;
+    }
+
+    public void setLecture(Lecture l){
+        lecture=l;
+    }
+
+    public String getL_id(){
+        return lecture.getL_id();
+    }
 }
