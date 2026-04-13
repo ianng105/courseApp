@@ -114,11 +114,14 @@ public class UserController {
         return "redirect:/";
     }
 
-
     // 个人资料页
     @GetMapping("/admin/profile/{username}")
     public String profile(@PathVariable String username, Model model) {
         Users user = us.getUserByUsername(username);
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
 
 
     // 管理员查看所有用户
@@ -132,7 +135,11 @@ public class UserController {
     @PostMapping("/admin/user/{username}/delete")
     public ModelAndView deleteUser(@PathVariable String username) {
         us.delete(username);
-        return new ModelAndView("studentmanage","Searchform",new SearchUserForm());
+        List<Users> users = us.getUsers();
+        ModelAndView mav = new  ModelAndView("studentmanage");
+        mav.addObject("Searchform",new SearchUserForm());
+        mav.addObject("userlist",users);
+        return mav;
     }
 
     // 用户添加课程
@@ -160,7 +167,7 @@ public class UserController {
 
     @PostMapping("/admin/studentmanage/")
     public String SearchUser(@ModelAttribute("Searchform") @Valid SearchUserForm form, BindingResult result,Model model){
-       String un=form.username;
-       return "redirect:/admin/studentmanage/"+un;
+        String un=form.username;
+        return "redirect:/admin/studentmanage/"+un;
     }
 }
